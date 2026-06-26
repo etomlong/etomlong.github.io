@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Investor Profile Assessment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d0f12;
+    --surface: #141720;
+    --surface-2: #1c2030;
+    --border: rgba(255,255,255,0.08);
+    --border-strong: rgba(255,255,255,0.15);
+    --text: #f0ede8;
+    --text-secondary: #8a8fa0;
+    --text-muted: #555a6a;
+    --accent: #c8a96e;
+    --accent-dim: rgba(200,169,110,0.12);
+    --accent-border: rgba(200,169,110,0.3);
+    --radius: 10px;
+    --index:    #4a8fd4;
+    --dividend: #e8a838;
+    --value:    #5bbf8a;
+    --growth:   #e05c5c;
+    --momentum: #8b7fd4;
+    --thematic: #5bbfb5;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f5f3ef;
+      --surface: #ffffff;
+      --surface-2: #f0ede8;
+      --border: rgba(0,0,0,0.08);
+      --border-strong: rgba(0,0,0,0.15);
+      --text: #1a1a1a;
+      --text-secondary: #555a6a;
+      --text-muted: #9a9fa8;
+      --accent: #9a7840;
+      --accent-dim: rgba(154,120,64,0.08);
+      --accent-border: rgba(154,120,64,0.25);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Header */
+  .site-header {
+    width: 100%;
+    padding: 1.25rem 2rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .logo-mark {
+    width: 28px; height: 28px;
+    border: 1.5px solid var(--accent);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: -0.03em;
+  }
+  .logo-text {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* Main container */
+  .container {
+    width: 100%;
+    max-width: 680px;
+    padding: 3rem 1.5rem 4rem;
+    flex: 1;
+  }
+
+  /* Intro */
+  .intro {
+    margin-bottom: 2.5rem;
+    animation: fadeUp 0.5s ease both;
+  }
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+  .intro h1 {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: clamp(28px, 5vw, 40px);
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+  }
+  .intro h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .intro p {
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1.7;
+    max-width: 520px;
+  }
+
+  /* Progress */
+  .progress-wrap {
+    margin-bottom: 2rem;
+    animation: fadeUp 0.5s 0.1s ease both;
+  }
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 0.5rem;
+  }
+  .progress-track {
+    height: 2px;
+    background: var(--border-strong);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 2px;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Question */
+  .question-area {
+    animation: fadeUp 0.4s ease both;
+  }
+  .q-text {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: clamp(18px, 3vw, 22px);
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+  }
+
+  /* Options */
+  .options { display: flex; flex-direction: column; gap: 0.5rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.9rem 1.1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    text-align: left;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    transition: border-color 0.15s, background 0.15s, color 0.15s;
+    width: 100%;
+  }
+  .option-btn .opt-index {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    min-width: 18px;
+    padding-top: 2px;
+    transition: color 0.15s;
+    flex-shrink: 0;
+  }
+  .option-btn:hover {
+    border-color: var(--accent-border);
+    background: var(--accent-dim);
+    color: var(--text);
+  }
+  .option-btn:hover .opt-index { color: var(--accent); }
+  .option-btn.selected {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+    color: var(--text);
+    border-width: 1.5px;
+  }
+  .option-btn.selected .opt-index { color: var(--accent); font-weight: 600; }
+
+  /* Nav */
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+  }
+  .btn {
+    padding: 0.6rem 1.25rem;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.15s, background 0.15s, transform 0.1s;
+    border: 1px solid transparent;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-ghost {
+    background: transparent;
+    border-color: var(--border-strong);
+    color: var(--text-secondary);
+  }
+  .btn-ghost:hover { background: var(--surface-2); color: var(--text); }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f12;
+    border-color: var(--accent);
+    font-weight: 600;
+  }
+  .btn-primary:hover { opacity: 0.88; }
+  .btn-primary:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+  .btn-invisible { opacity: 0; pointer-events: none; }
+
+  /* Results */
+  .result-area { animation: fadeUp 0.5s ease both; }
+
+  .result-hero {
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 14px;
+    padding: 2rem;
+    margin-bottom: 1.25rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .result-hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--profile-color, var(--accent));
+  }
+  .result-icon-wrap {
+    font-size: 36px;
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .result-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+  }
+  .result-title {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: clamp(22px, 4vw, 30px);
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+    line-height: 1.2;
+  }
+  .result-author {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-bottom: 1.25rem;
+  }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1.25rem; }
+  .tag {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.02em;
+    border: 1px solid;
+  }
+  .result-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.75;
+  }
+
+  .trait-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 1.5rem;
+  }
+  .trait-box {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.75rem 0.9rem;
+  }
+  .trait-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+  .trait-val {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  /* DNA bars */
+  .section-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .section-heading {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.25rem;
+  }
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .bar-row:last-child { margin-bottom: 0; }
+  .bar-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    width: 138px;
+    flex-shrink: 0;
+  }
+  .bar-track {
+    flex: 1;
+    height: 5px;
+    background: var(--border-strong);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .bar-pct {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    width: 34px;
+    text-align: right;
+  }
+
+  /* Insights */
+  .insight-item {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+  .insight-item:last-child { margin-bottom: 0; }
+  .insight-arrow {
+    color: var(--accent);
+    flex-shrink: 0;
+    font-weight: 600;
+    margin-top: 1px;
+  }
+
+  .restart-btn {
+    width: 100%;
+    margin-top: 1.5rem;
+    padding: 0.8rem;
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    letter-spacing: 0.01em;
+  }
+  .restart-btn:hover { background: var(--surface-2); color: var(--text); }
+
+  /* Prompt block */
+  .prompt-block {
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 14px;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+    position: relative;
+  }
+  .prompt-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .prompt-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.75;
+    color: var(--text-secondary);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin-bottom: 0.75rem;
+  }
+  .copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.45rem 0.9rem;
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .copy-btn:hover { background: var(--surface-2); color: var(--text); }
+  .copy-btn.copied { color: #5bbf8a; border-color: #5bbf8a40; }
+
+  /* Footer */
+  .site-footer {
+    width: 100%;
+    padding: 1.5rem 2rem;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Animation */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    .trait-grid { grid-template-columns: 1fr; }
+    .bar-label { width: 110px; font-size: 11px; }
+    .container { padding: 2rem 1rem 3rem; }
+    .result-hero { padding: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header" role="banner">
+  <div class="logo-mark" aria-hidden="true">IV</div>
+  <span class="logo-text">Investor Profile</span>
+</header>
+
+<main class="container" id="main" role="main">
+  <div class="intro" id="intro-block">
+    <div class="eyebrow">Assessment</div>
+    <h1>What kind of investor <em>are you?</em></h1>
+    <p>13 questions drawn from six investing philosophies — from Graham to O'Neil, Malkiel to Lynch. Answer honestly to discover your dominant investor archetype.</p>
+    <p style="margin-top:1rem;font-size:13px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;line-height:1.8">
+      Developed by: Tom Long<br>
+      Questions &amp; feedback: <a href="mailto:tom.long@outlook.com" style="color:var(--text-muted);text-decoration:none;border-bottom:1px solid var(--border-strong)">tom.long@outlook.com</a>
+    </p>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-meta">
+      <span id="q-counter">Question 1 of 13</span>
+      <span id="q-pct">0%</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  </div>
+
+  <div id="quiz-root"></div>
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  Based on Graham · Lynch · Malkiel · O'Neil · Weiss &amp; Wright · Freeman<br>
+  <span style="margin-top:0.4rem;display:inline-block">Developed by: Tom Long &nbsp;·&nbsp; <a href="mailto:tom.long@outlook.com" style="color:var(--text-muted);text-decoration:none;border-bottom:1px solid var(--border-strong)">tom.long@outlook.com</a></span>
+</footer>
+
+<script>
+const LABELS = ['A','B','C','D','E','F'];
+
+const questions = [
+  {
+    q: "What is your primary goal as an investor?",
+    opts: [
+      { text: "Protect and slowly grow my capital with minimal stress", scores: { index:3, dividend:2, value:1 } },
+      { text: "Generate regular income I can live on or reinvest", scores: { dividend:3, value:1, index:1 } },
+      { text: "Find undervalued companies before others notice them", scores: { value:3, growth:1, dividend:1 } },
+      { text: "Ride high-growth companies to large capital gains", scores: { growth:3, momentum:1, thematic:1 } },
+      { text: "Capture stocks with strong price momentum", scores: { momentum:3, growth:1 } },
+      { text: "Align my portfolio with long-term trends and my values", scores: { thematic:3, index:1 } }
+    ]
+  },
+  {
+    q: "Your portfolio is down 30% after a market crash. What do you do?",
+    opts: [
+      { text: "Sell everything — I can't handle seeing my money disappear", scores: { index:1 } },
+      { text: "Hold steady — I trust my diversified index funds to recover", scores: { index:3, dividend:1 } },
+      { text: "Hold and collect dividends — my income hasn't actually stopped", scores: { dividend:3, value:1 } },
+      { text: "Buy more — if nothing has changed fundamentally, it's on sale", scores: { value:3, growth:1 } },
+      { text: "Sell — momentum has turned bearish, I follow the signal", scores: { momentum:3 } },
+      { text: "Review my thematic thesis — if it's intact, I hold", scores: { thematic:3, index:1 } }
+    ]
+  },
+  {
+    q: "How much time per week are you willing to spend researching investments?",
+    opts: [
+      { text: "Zero — I want it to run on autopilot", scores: { index:3 } },
+      { text: "An hour or two checking dividend yields and payout ratios", scores: { dividend:3, value:1 } },
+      { text: "Several hours reading annual reports and 10-Ks", scores: { value:3, growth:1 } },
+      { text: "Daily — tracking earnings, charts, and institutional flows", scores: { momentum:3, growth:1 } },
+      { text: "Deep dives into industry trends, ESG reports, and macro themes", scores: { thematic:3, growth:1 } }
+    ]
+  },
+  {
+    q: "Which statement best describes how you think about stock valuation?",
+    opts: [
+      { text: "I don't pick stocks — the market is too efficient to beat", scores: { index:3 } },
+      { text: "A stock is worth what it pays me — yield is everything", scores: { dividend:3 } },
+      { text: "A stock is worth the present value of future earnings, period", scores: { value:3, growth:1 } },
+      { text: "P/E doesn't matter much if growth is fast enough", scores: { growth:3, momentum:1 } },
+      { text: "Price action and volume tell me more than most fundamentals", scores: { momentum:3 } },
+      { text: "Long-term stakeholder value and thematic trends determine true worth", scores: { thematic:3 } }
+    ]
+  },
+  {
+    q: "What kind of companies are you most drawn to?",
+    opts: [
+      { text: "All of them — I want the whole market in one fund", scores: { index:3 } },
+      { text: "Blue-chip stalwarts with 25+ years of dividend growth", scores: { dividend:3, value:1 } },
+      { text: "Boring businesses with wide moats trading below intrinsic value", scores: { value:3, dividend:1 } },
+      { text: "Fast-growing disruptors with 20–30%+ earnings growth", scores: { growth:3, momentum:1 } },
+      { text: "Market leaders breaking out to new highs with surging volume", scores: { momentum:3 } },
+      { text: "Companies leading on clean energy, AI safety, or social impact", scores: { thematic:3, index:1 } }
+    ]
+  },
+  {
+    q: "How do you feel about paying a high P/E for a company you believe in?",
+    opts: [
+      { text: "I avoid it — I only pay for what earnings justify today", scores: { value:3, dividend:1 } },
+      { text: "Fine if the growth rate supports the multiple (PEG ratio)", scores: { growth:3, momentum:1 } },
+      { text: "Irrelevant — I care about yield on cost, not current P/E", scores: { dividend:3 } },
+      { text: "Fine if momentum is strong and institutional buying confirms it", scores: { momentum:3 } },
+      { text: "Acceptable for structural themes with very long runways", scores: { thematic:3, growth:1 } },
+      { text: "I avoid individual stock picking entirely", scores: { index:3 } }
+    ]
+  },
+  {
+    q: "Which book title sounds most appealing to you?",
+    opts: [
+      { text: "\"A Random Walk Down Wall Street\" — markets are hard to beat", scores: { index:3 } },
+      { text: "\"Dividends Don't Lie\" — income that compounds for decades", scores: { dividend:3 } },
+      { text: "\"The Intelligent Investor\" — find the margin of safety", scores: { value:3 } },
+      { text: "\"One Up on Wall Street\" — find tomorrow's tenbaggers today", scores: { growth:3, value:1 } },
+      { text: "\"How to Make Money in Stocks\" — buy breakouts, cut losses fast", scores: { momentum:3 } },
+      { text: "\"Stakeholder Capitalism\" — profit and purpose together", scores: { thematic:3 } }
+    ]
+  },
+  {
+    q: "How important is regular income from your investments right now?",
+    opts: [
+      { text: "Critical — I need cash flow to cover living expenses", scores: { dividend:3, value:1 } },
+      { text: "Nice to have, but I mostly reinvest it", scores: { dividend:2, value:1, index:1 } },
+      { text: "Not at all — I'm focused on total return and capital growth", scores: { growth:3, momentum:2, thematic:1 } },
+      { text: "Indifferent — my index funds distribute what they distribute", scores: { index:3 } }
+    ]
+  },
+  {
+    q: "A stock you don't own just jumped 40% in a month. How do you react?",
+    opts: [
+      { text: "Ignore it — I don't chase performance", scores: { index:3, value:1 } },
+      { text: "Investigate whether it still pays a reliable dividend", scores: { dividend:3 } },
+      { text: "Research whether fundamentals now justify the higher price", scores: { value:3 } },
+      { text: "Add it to my watchlist if earnings growth supports the move", scores: { growth:3, momentum:1 } },
+      { text: "Consider buying if it's breaking out on strong volume", scores: { momentum:3 } },
+      { text: "Check if the move aligns with one of my thematic trends", scores: { thematic:3 } }
+    ]
+  },
+  {
+    q: "How do you decide when to sell a stock?",
+    opts: [
+      { text: "I rarely sell — I rebalance annually and hold long-term", scores: { index:3, dividend:1 } },
+      { text: "I sell only when a dividend is cut — otherwise I hold forever", scores: { dividend:3 } },
+      { text: "I sell when price reaches my estimate of intrinsic value", scores: { value:3 } },
+      { text: "I sell when the growth story breaks or earnings decelerate", scores: { growth:3, momentum:1 } },
+      { text: "I sell immediately if it drops 7–8% from my buy point", scores: { momentum:3 } },
+      { text: "I sell when a company's thematic or governance profile materially deteriorates", scores: { thematic:3 } }
+    ]
+  },
+  {
+    q: "What role does diversification play in your strategy?",
+    opts: [
+      { text: "Maximum — I own the entire market through index funds", scores: { index:3 } },
+      { text: "Moderate — 10–20 high-quality dividend payers across sectors", scores: { dividend:3, value:1 } },
+      { text: "Moderate — 15–30 undervalued stocks across various industries", scores: { value:3 } },
+      { text: "Concentrated — I want my best ideas to move the needle", scores: { growth:3, momentum:1 } },
+      { text: "Selective — I run a focused book of market leaders only", scores: { momentum:3 } },
+      { text: "Thematic — diversified within my chosen megatrends", scores: { thematic:3, index:1 } }
+    ]
+  },
+  {
+    q: "How do you think about fees and investment expenses?",
+    opts: [
+      { text: "Obsessively — every basis point compounds against me", scores: { index:3 } },
+      { text: "Important, but secondary to dividend yield and quality", scores: { dividend:2, value:1 } },
+      { text: "I'll pay reasonable fees for superior fundamental research", scores: { value:2, growth:1 } },
+      { text: "I pay for information edge — worth it if I find tenbaggers", scores: { growth:3 } },
+      { text: "I pay for real-time data, charts, and screening tools", scores: { momentum:3 } },
+      { text: "I'll accept slightly higher costs for specialized thematic funds", scores: { thematic:3 } }
+    ]
+  },
+  {
+    q: "What is your investment time horizon?",
+    opts: [
+      { text: "Indefinitely — I plan to hold index funds forever", scores: { index:3 } },
+      { text: "Decades — I build income streams I never need to sell", scores: { dividend:3, value:1 } },
+      { text: "3–10 years per position until price reaches fair value", scores: { value:3 } },
+      { text: "2–5 years per company during peak growth phase", scores: { growth:3 } },
+      { text: "Weeks to months — I follow momentum, not stories", scores: { momentum:3 } },
+      { text: "10–20 years — megatrends play out over full market cycles", scores: { thematic:3, index:1 } }
+    ]
+  }
+];
+
+const profiles = {
+  index: {
+    icon: "📈",
+    name: "Index / Passive investor",
+    author: "Burton Malkiel · A Random Walk Down Wall Street",
+    desc: "You believe markets are efficient and cost is the enemy of returns. Your edge is discipline: broad diversification, ultra-low expense ratios, and time in the market rather than timing the market. You ignore noise, rebalance mechanically, and let compounding do the heavy lifting.",
+    traits: { "Time commitment": "Minimal", "Risk tolerance": "Moderate", "Income focus": "Low", "Holding period": "Forever" },
+    tags: [{ label: "Low cost", color: "#4a8fd4" }, { label: "Buy & hold", color: "#5bbf8a" }, { label: "Diversified", color: "#8b7fd4" }],
+    insights: [
+      "Minimize expense ratios — target under 0.10% annually",
+      "A three-fund portfolio covers most investors' needs",
+      "Dollar-cost average consistently through all market conditions",
+      "Rebalance once a year — nothing more"
+    ],
+    color: "#4a8fd4",
+    prompt: `I am a passive index investor following Burton Malkiel's philosophy. My goals are maximum diversification, minimal costs, and long-term compounding. Please recommend:
+1. A core 3-fund index portfolio (US total market, international, bonds) with suggested allocation percentages for a moderate risk tolerance
+2. The top 3–5 specific ETFs for each fund category, ranked by expense ratio
+3. One optional satellite tilt (e.g. REITs, TIPS) and why it fits a passive strategy
+Keep recommendations grounded in low-cost, broadly diversified instruments only. No individual stocks.`
+  },
+  dividend: {
+    icon: "💰",
+    name: "Dividend investor",
+    author: "Weiss & Wright · Dividends Don't Lie",
+    desc: "You build wealth through income. A growing stream of dividends from blue-chip stalwarts — companies with 25+ years of uninterrupted payments — is your north star. You buy at historically high yields and sell at historically low ones, letting the dividend track the story.",
+    traits: { "Time commitment": "Low–moderate", "Risk tolerance": "Low–moderate", "Income focus": "High", "Holding period": "Years to decades" },
+    tags: [{ label: "Income focus", color: "#e8a838" }, { label: "Quality first", color: "#5bbf8a" }, { label: "Blue chip", color: "#4a8fd4" }],
+    insights: [
+      "Target companies with 25+ years of uninterrupted dividend growth",
+      "Buy at historically high yield — the undervalue zone",
+      "Sell when yield compresses to historical lows — the overvalue zone",
+      "Immediate sell trigger: any dividend cut, no exceptions"
+    ],
+    color: "#e8a838",
+    prompt: `I am a dividend investor following the Weiss & Wright Dividends Don't Lie methodology. I seek blue-chip companies with 25+ years of uninterrupted dividend growth, and I buy when yield is at historically high levels (undervalue zone). Please recommend:
+1. 8–10 individual blue-chip dividend stocks currently trading near or in their historic high-yield (undervalue) zone, with their current yield, dividend growth streak, and payout ratio
+2. 2–3 dividend-focused ETFs (e.g. VIG, SCHD, DVY) as diversified alternatives
+3. Any sectors or names I should avoid due to elevated payout ratios or dividend risk
+Focus on quality and income safety above yield size.`
+  },
+  value: {
+    icon: "🔍",
+    name: "Value investor",
+    author: "Benjamin Graham · The Intelligent Investor",
+    desc: "You think like a business owner, not a trader. You hunt for companies priced below intrinsic value, demand a margin of safety, and ignore Mr. Market's daily mood swings. Patience is your superpower — you wait for the right pitch, then swing hard.",
+    traits: { "Time commitment": "High", "Risk tolerance": "Low–moderate", "Income focus": "Moderate", "Holding period": "3–10 years" },
+    tags: [{ label: "Margin of safety", color: "#4a8fd4" }, { label: "Contrarian", color: "#e05c5c" }, { label: "Fundamental", color: "#5bbf8a" }],
+    insights: [
+      "Insist on a margin of safety — never pay full intrinsic value",
+      "Current ratio ≥ 2:1 and avoid heavily indebted companies",
+      "P/E no more than 15× average earnings over the past 3 years",
+      "Treat daily price quotes as offers, not investment guidance"
+    ],
+    color: "#5bbf8a",
+    prompt: `I am a value investor following Benjamin Graham's Intelligent Investor framework. I seek companies trading below intrinsic value with a clear margin of safety, strong balance sheets, and reasonable P/E ratios. Please recommend:
+1. 6–10 stocks that currently screen well on Grahamite criteria: P/E below 15×, P/B below 1.5×, current ratio ≥ 2:1, positive earnings for 5+ years, and trading below estimated intrinsic value
+2. For each, provide a brief bull case and the key risk to the thesis
+3. 1–2 value-tilted ETFs (e.g. VTV, QVAL) for those who prefer a diversified approach
+Avoid IPOs, highly leveraged companies, and any stock trading at a premium to book.`
+  },
+  growth: {
+    icon: "🚀",
+    name: "Growth investor",
+    author: "Peter Lynch · One Up on Wall Street",
+    desc: "You're hunting tenbaggers — stocks that can multiply 10× or more. You discover them in daily life before Wall Street catches on, verify the fundamentals, and hold through volatility as long as the story stays intact. You love fast-growers in their early innings.",
+    traits: { "Time commitment": "High", "Risk tolerance": "High", "Income focus": "Low", "Holding period": "2–5 years" },
+    tags: [{ label: "High growth", color: "#e05c5c" }, { label: "Tenbagger hunt", color: "#e8a838" }, { label: "Story-driven", color: "#8b7fd4" }],
+    insights: [
+      "Know the story in three sentences — if you can't, don't buy",
+      "Use PEG ratio: P/E ÷ growth rate. Below 1.0 is attractive",
+      "Invest in what you know and observe in your daily life first",
+      "Sell when the growth story breaks — not based on price alone"
+    ],
+    color: "#e05c5c",
+    prompt: `I am a growth investor following Peter Lynch's One Up on Wall Street methodology. I look for fast-growers (20–25%+ annual earnings growth) with strong stories, reasonable PEG ratios, and long runways ahead of them — potential tenbaggers. Please recommend:
+1. 6–10 growth stocks with compelling stories, EPS growth of 20%+ over the past 3 years, and a PEG ratio below 1.5
+2. For each, give the one-paragraph "Lynch story" — what they do, why they will keep growing, and what stage of growth they are in
+3. The key risk that would cause you to sell each name
+4. 1–2 growth ETFs (e.g. VUG, SCHG) as a diversified complement
+Avoid slow-growers, turnarounds, and asset plays for this list.`
+  },
+  momentum: {
+    icon: "⚡",
+    name: "Momentum investor",
+    author: "William O'Neil · How to Make Money in Stocks",
+    desc: "You follow the CAN SLIM system: earnings acceleration, new highs, institutional sponsorship, and a confirmed market uptrend. You cut losers at 7–8% below purchase price with no excuses and let winners run. Discipline and rules — not emotions — drive every decision.",
+    traits: { "Time commitment": "Very high", "Risk tolerance": "High", "Income focus": "None", "Holding period": "Weeks to months" },
+    tags: [{ label: "CAN SLIM", color: "#e05c5c" }, { label: "Rules-based", color: "#4a8fd4" }, { label: "Technical", color: "#e8a838" }],
+    insights: [
+      "Current EPS must be up 25%+ year-over-year with acceleration",
+      "Buy breakouts from proper bases on 40%+ above-average volume",
+      "Cut every loss at 7–8% below your purchase price — no exceptions",
+      "Only enter new positions when the market is in a confirmed uptrend"
+    ],
+    color: "#8b7fd4",
+    prompt: `I am a momentum investor using William O'Neil's CAN SLIM system. I buy market leaders breaking out of proper bases on above-average volume during confirmed market uptrends, and I cut all losses at 7–8%. Please recommend:
+1. 5–8 stocks that currently meet CAN SLIM criteria: quarterly EPS up 25%+, annual EPS growth 25%+ for 3 years, Relative Strength Rating 85+, increasing institutional sponsorship, and a new product/service catalyst
+2. For each, identify the current base pattern (cup-with-handle, flat base, etc.), the precise pivot/buy point, and the 7–8% automatic stop-loss level
+3. Confirm whether the general market (S&P 500 / Nasdaq) is in a confirmed uptrend or distribution phase right now
+4. 1–2 momentum ETFs (e.g. MTUM, QMOM) for a rules-based alternative
+Do not recommend any stock in a Stage 3 or Stage 4 base.`
+  },
+  thematic: {
+    icon: "🌍",
+    name: "Thematic investor",
+    author: "R. Edward Freeman · Stakeholder Theory",
+    desc: "You invest in the world you want to see. Structural megatrends — clean energy, AI safety, healthcare innovation, circular economy — shape your portfolio. You screen for strong governance, stakeholder management, and environmental responsibility, believing long-term value and positive impact are aligned.",
+    traits: { "Time commitment": "Moderate–high", "Risk tolerance": "Moderate–high", "Income focus": "Low", "Holding period": "10–20 years" },
+    tags: [{ label: "Thematic", color: "#5bbfb5" }, { label: "Megatrend", color: "#8b7fd4" }, { label: "Long-term", color: "#4a8fd4" }],
+    insights: [
+      "Screen for MSCI ESG rating of A or above before investing",
+      "Prioritize governance quality: board independence and pay alignment",
+      "Focus on structural themes with 10–20 year tailwinds",
+      "Companies that manage stakeholders well outperform long-term"
+    ],
+    color: "#5bbfb5",
+    prompt: `I am a thematic investor following R. Edward Freeman's stakeholder theory. I invest in structural megatrends with 10–20 year runways — clean energy, AI infrastructure, healthcare innovation, circular economy — and I prioritize companies with strong governance, environmental responsibility, and stakeholder management. Please recommend:
+1. 4–6 thematic megatrends with the strongest structural tailwinds over the next decade, with a one-paragraph thesis for each
+2. For each theme, name 2–3 leading individual stocks and 1 thematic ETF (e.g. ICLN, ARKK, ROBO) that offer the best exposure
+3. Screen out any companies with significant governance red flags or environmental controversies
+4. Suggest a portfolio weighting across themes for a moderate-risk thematic investor
+Focus on long-term compounders, not short-term momentum plays.`
+  }
+};
+
+const profileLabels = {
+  index: "Index / Passive",
+  dividend: "Dividend",
+  value: "Value",
+  growth: "Growth",
+  momentum: "Momentum",
+  thematic: "Thematic"
+};
+
+let current = 0;
+let answers = [];
+let selectedOpt = null;
+const scores = { index:0, dividend:0, value:0, growth:0, momentum:0, thematic:0 };
+
+function updateProgress() {
+  const pct = Math.round((current / questions.length) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('q-counter').textContent = current < questions.length
+    ? `Question ${current + 1} of ${questions.length}`
+    : `Complete`;
+  document.getElementById('q-pct').textContent = pct + '%';
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const root = document.getElementById('quiz-root');
+  root.style.opacity = '0';
+
+  setTimeout(() => {
+    root.innerHTML = `
+      <div class="question-area">
+        <p class="q-text">${q.q}</p>
+        <div class="options" role="group" aria-label="Answer options">
+          ${q.opts.map((o, i) => `
+            <button class="option-btn${selectedOpt === i ? ' selected' : ''}"
+              onclick="selectOpt(${i})"
+              aria-pressed="${selectedOpt === i}">
+              <span class="opt-index" aria-hidden="true">${LABELS[i]}</span>
+              <span>${o.text}</span>
+            </button>
+          `).join('')}
+        </div>
+        <div class="nav-row">
+          <button class="btn btn-ghost${current === 0 ? ' btn-invisible' : ''}" onclick="goBack()">← Back</button>
+          <button class="btn btn-primary" id="next-btn" onclick="goNext()" ${selectedOpt === null ? 'disabled' : ''}>
+            ${current === questions.length - 1 ? 'See my profile →' : 'Next →'}
+          </button>
+        </div>
+      </div>
+    `;
+    root.style.transition = 'opacity 0.3s ease';
+    root.style.opacity = '1';
+  }, 150);
+}
+
+function selectOpt(i) {
+  selectedOpt = i;
+  document.querySelectorAll('.option-btn').forEach((b, idx) => {
+    b.classList.toggle('selected', idx === i);
+    b.setAttribute('aria-pressed', idx === i);
+  });
+  document.getElementById('next-btn').disabled = false;
+}
+
+function goNext() {
+  if (selectedOpt === null) return;
+  const q = questions[current];
+  const s = q.opts[selectedOpt].scores;
+  if (answers[current]) {
+    Object.keys(answers[current].scores).forEach(k => scores[k] -= answers[current].scores[k]);
+  }
+  answers[current] = { opt: selectedOpt, scores: s };
+  Object.keys(s).forEach(k => scores[k] += s[k]);
+  current++;
+  if (current >= questions.length) {
+    updateProgress();
+    showResult();
+  } else {
+    selectedOpt = answers[current] !== undefined ? answers[current].opt : null;
+    updateProgress();
+    renderQuestion();
+  }
+}
+
+function goBack() {
+  if (current === 0) return;
+  if (answers[current - 1]) {
+    Object.keys(answers[current - 1].scores).forEach(k => scores[k] -= answers[current - 1].scores[k]);
+    delete answers[current - 1];
+  }
+  current--;
+  selectedOpt = answers[current] !== undefined ? answers[current].opt : null;
+  updateProgress();
+  renderQuestion();
+}
+
+function showResult() {
+  const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+  const topKey = sorted[0][0];
+  const total = sorted.reduce((s, [, v]) => s + v, 0) || 1;
+  const p = profiles[topKey];
+
+  const root = document.getElementById('quiz-root');
+  root.style.opacity = '0';
+
+  setTimeout(() => {
+    const tagsHtml = p.tags.map(t =>
+      `<span class="tag" style="color:${t.color};border-color:${t.color}40;background:${t.color}18">${t.label}</span>`
+    ).join('');
+
+    const traitsHtml = Object.entries(p.traits).map(([k, v]) =>
+      `<div class="trait-box"><div class="trait-label">${k}</div><div class="trait-val">${v}</div></div>`
+    ).join('');
+
+    const barsHtml = sorted.map(([k, v]) => {
+      const pct = Math.round((v / total) * 100);
+      const c = profiles[k].color;
+      return `<div class="bar-row">
+        <div class="bar-label">${profileLabels[k]}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${c}"></div></div>
+        <div class="bar-pct">${pct}%</div>
+      </div>`;
+    }).join('');
+
+    const insightsHtml = p.insights.map(i =>
+      `<div class="insight-item"><span class="insight-arrow">→</span><span>${i}</span></div>`
+    ).join('');
+
+    const escapedPrompt = p.prompt.replace(/`/g, '&#96;');
+
+    root.innerHTML = `
+      <div class="result-area">
+        <div class="result-hero" style="--profile-color:${p.color}">
+          <span class="result-icon-wrap" role="img" aria-label="${p.name} icon">${p.icon}</span>
+          <div class="result-eyebrow">Your investor profile</div>
+          <div class="result-title">${p.name}</div>
+          <div class="result-author">${p.author}</div>
+          <div class="tags">${tagsHtml}</div>
+          <p class="result-desc">${p.desc}</p>
+          <div class="trait-grid">${traitsHtml}</div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-heading">Investor DNA breakdown</div>
+          ${barsHtml}
+        </div>
+
+        <div class="section-block">
+          <div class="section-heading">Key principles for your style</div>
+          ${insightsHtml}
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-label">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 4h12M2 8h8M2 12h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            AI prompt — paste into Claude, ChatGPT, or any AI assistant
+          </div>
+          <div class="prompt-text" id="prompt-text">${escapedPrompt}</div>
+          <button class="copy-btn" id="copy-btn" onclick="copyPrompt()">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5" stroke="currentColor" stroke-width="1.4"/></svg>
+            Copy prompt
+          </button>
+        </div>
+
+        <button class="restart-btn" onclick="restart()">↺ Retake the assessment</button>
+
+        <p style="margin-top:1.25rem;font-size:12px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;text-align:center;line-height:1.9">
+          Developed by: Tom Long<br>
+          Questions &amp; feedback: <a href="mailto:tom.long@outlook.com" style="color:var(--text-muted);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.15)">tom.long@outlook.com</a>
+        </p>
+      </div>
+    `;
+
+    root.style.transition = 'opacity 0.35s ease';
+    root.style.opacity = '1';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, 150);
+}
+
+function copyPrompt() {
+  const text = document.getElementById('prompt-text').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-btn');
+    btn.classList.add('copied');
+    btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7-7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Copied!`;
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5" stroke="currentColor" stroke-width="1.4"/></svg> Copy prompt`;
+    }, 2000);
+  });
+}
+
+function restart() {
+  current = 0; selectedOpt = null; answers = [];
+  Object.keys(scores).forEach(k => scores[k] = 0);
+  document.getElementById('intro-block').style.display = '';
+  updateProgress();
+  renderQuestion();
+}
+
+// Hide intro after first question
+document.getElementById('quiz-root').addEventListener('click', () => {
+  const intro = document.getElementById('intro-block');
+  if (intro && current > 0) intro.style.display = 'none';
+}, { once: false });
+
+// Init
+updateProgress();
+renderQuestion();
+</script>
+</body>
+</html>
