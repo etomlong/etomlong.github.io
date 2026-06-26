@@ -678,7 +678,7 @@ const questions = shuffle([
       { text: "10–20 years — megatrends play out over full market cycles", scores: { thematic:3, index:1 } }
     ]
   }
-]);
+]).map(q => ({ ...q, opts: shuffle([...q.opts]) }));
 
 const profiles = {
   index: {
