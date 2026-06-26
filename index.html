@@ -529,7 +529,15 @@
 <script>
 const LABELS = ['A','B','C','D','E','F'];
 
-const questions = [
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+const questions = shuffle([
   {
     q: "What is your primary goal as an investor?",
     opts: [
@@ -670,7 +678,7 @@ const questions = [
       { text: "10–20 years — megatrends play out over full market cycles", scores: { thematic:3, index:1 } }
     ]
   }
-];
+]);
 
 const profiles = {
   index: {
